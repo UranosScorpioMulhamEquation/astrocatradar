@@ -1648,13 +1648,209 @@ def build_full_html(r):
 <div class="chips">{"".join(f'<span class="chip">{c}</span>' for c in chips)}</div>
 {body}
 <button class="print-btn" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
-<div class="footer">أُعد هذا التقرير آلياً (Swiss Ephemeris + قواعد رعاية القطط). الجزء الفلكي (بما فيه النفسي والطبي) للترفيه، والجزء البيطري إرشادي ولا يغني عن الطبيب البيطري - جميع الحقوق محفوظة للطبيب البيطري و الفلكي استرو رادار البيطري - .</div>
+<div class="footer">أُعد هذا التقرير آلياً (Swiss Ephemeris + قواعد رعاية القطط). الجزء الفلكي (بما فيه النفسي والطبي) للترفيه، والجزء البيطري إرشادي ولا يغني عن الطبيب البيطري - جميع الحقوق محفوظة للطبيب البيطري و الفلكي استرو رادار .</div>
 </div></body></html>"""
 
 
 # =====================================================================
 # 10. واجهة Streamlit
 # =====================================================================
+st.markdown("""
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap');
+
+/* --- الضبط العام للغة العربية والخلفية الكونية الداكنة --- */
+html, body, [class*="css"], .stApp {
+    direction: rtl !important;
+    text-align: right !important;
+    font-family: 'Cairo', 'Tajawal', Tahoma, sans-serif !important;
+    background-color: #07090e !important;
+    color: #e2e8f0 !important;
+}
+
+/* خلفية التطبيق الرئيسية بتدرج سديمي فلكي */
+[data-testid="stAppViewContainer"] {
+    background: radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.04) 0%, transparent 60%),
+                #07090e !important;
+}
+
+/* شريط الهيدر العلوي شفاف بالكامل */
+[data-testid="stHeader"] {
+    background: transparent !important;
+}
+
+/* تخصيص شريط التمرير Scrollbar بنمط أنيق داكن */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+::-webkit-scrollbar-track {
+    background: #090c14;
+}
+::-webkit-scrollbar-thumb {
+    background: #242c3d;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #F59E0B;
+}
+
+/* --- تصميم القائمة الجانبية الفاخرة --- */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0e1322 0%, #080a12 100%) !important;
+    border-left: 1px solid rgba(245, 158, 11, 0.22) !important;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+    color: #FBBF24 !important;
+    font-weight: 800 !important;
+    font-size: 22px !important;
+    text-shadow: 0 0 15px rgba(245, 158, 11, 0.45);
+    border-bottom: 1px solid rgba(245, 158, 11, 0.15);
+    padding-bottom: 12px;
+}
+
+/* تخصيص خيارات القائمة الراديوية كأزرار تفاعلية زجاجية بلون أصفر ذهبي */
+div[data-testid="stRadio"] > div[role="radiogroup"] {
+    gap: 8px;
+}
+
+div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+    background: rgba(245, 158, 11, 0.035) !important;
+    border: 1px solid rgba(245, 158, 11, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 10px 16px !important;
+    margin-bottom: 6px !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: pointer !important;
+}
+
+/* تلوين نصوص عناصر القائمة إجبارياً بالأصفر الذهبي الساطع وتجاوز اللون الرمادي */
+div[data-testid="stRadio"] label,
+div[data-testid="stRadio"] label p,
+div[data-testid="stRadio"] [data-testid="stMarkdownContainer"] p,
+div[data-testid="stRadio"] span {
+    color: #FBBF24 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+}
+
+/* تأثير التمرير (Hover) */
+div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
+    background: rgba(245, 158, 11, 0.14) !important;
+    border-color: #F59E0B !important;
+    transform: translateX(-4px);
+    box-shadow: 0 4px 18px rgba(245, 158, 11, 0.3) !important;
+}
+
+div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover p,
+div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover span {
+    color: #FEF3C7 !important;
+}
+
+/* العنصر النشط المختار بتوهج ذهبي فاخر */
+div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.26) 0%, rgba(217, 119, 6, 0.16) 100%) !important;
+    border: 1px solid #F59E0B !important;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p,
+div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) span {
+    color: #FFFBEB !important;
+    font-weight: 800 !important;
+    text-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+/* عنوان القائمة "اختر البرنامج:" بالأصفر الذهبي الملكي */
+div[data-testid="stRadio"] > label,
+div[data-testid="stRadio"] > label p {
+    color: #F59E0B !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    margin-bottom: 12px !important;
+    text-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+}
+
+/* تخصيص مؤشر الراديو الدائري باللون الذهبي */
+div[data-testid="stRadio"] input[type="radio"] {
+    accent-color: #F59E0B !important;
+}
+
+/* --- تخصيص الأزرار الرئيسية --- */
+.stButton button {
+    background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    padding: 0.65rem 1.6rem !important;
+    box-shadow: 0 6px 20px -3px rgba(124, 58, 237, 0.45) !important;
+    transition: all 0.3s ease !important;
+}
+
+.stButton button:hover {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
+    box-shadow: 0 10px 28px -3px rgba(139, 92, 246, 0.6) !important;
+    transform: translateY(-2px) !important;
+    color: #ffffff !important;
+}
+
+/* تخصيص زر التحميل */
+.stDownloadButton button {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 6px 20px -3px rgba(2, 132, 199, 0.45) !important;
+    transition: all 0.3s ease !important;
+}
+
+.stDownloadButton button:hover {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 28px -3px rgba(14, 165, 233, 0.6) !important;
+}
+
+/* تخصيص حقول الإدخال */
+.stTextInput input, .stSelectbox [data-baseweb="select"], .stDateInput input, .stTimeInput input {
+    background-color: rgba(17, 24, 39, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #f8fafc !important;
+    border-radius: 10px !important;
+    font-family: 'Cairo', sans-serif !important;
+}
+
+/* بطاقات وتنبيهات مخصصة */
+.sidebar-footer-badge {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 25px;
+    text-align: center;
+    font-size: 13px;
+    color: #FDE68A;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# القائمة الجانبية للمنظومة الفلكية
+st.sidebar.markdown("""
+<div style="text-align: center; padding: 10px 0 15px 0;">
+    <div style="font-size: 34px; margin-bottom: 6px; filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5));">🪐</div>
+    <div style="font-size: 20px; font-weight: 800; color: #FBBF24; letter-spacing: -0.5px;">رادار الرعاية الفلكية للقطط</div>
+    <div style="font-size: 12px; color: #fde68a; font-weight: 600; margin-top: 4px;">Feline Astrological Care Radar</div>
+</div>
+""", unsafe_allow_html=True)
+
 MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
           "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
 
@@ -1730,7 +1926,7 @@ def render(r):
 
 def main():
     st.markdown(f"<style>{CARD_CSS}{APP_CSS}</style>", unsafe_allow_html=True)
-    st.title("🐱 الرعاية الفلكية للقطط — Feline astrological care")
+    st.title("🐱 رادار الرعاية الفلكية للقطط — Feline Astrological Care Radar")
     st.caption("تحليل فلكي ممتع يدخل فيه التحليل الفلكي للشخصية + التنجيم النفسي + التنجيم الطبي + معلومات بيطرية و غذائية و سلوكية.")
     st.caption("تنويه : المحتوى إرشادي و لا يغني عن استشارة الطبيب البيطري.")
     st.caption("تطوير الفلكي و الطبيب البيطري استرو رادار.")
