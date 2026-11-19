@@ -3,7 +3,6 @@ import html
 import os
 import uuid
 import streamlit as st
-import streamlit.components.v1 as components
 import swisseph as swe
 # ==================== إعدادات الأمان ونظام الترخيص ====================
 KEY_FILE = "license.key"
@@ -1589,47 +1588,239 @@ SECTIONS = [("astro", "🔮 التحليل الفلكي", section_astro),
 # 9. CSS والتقرير الكامل
 # =====================================================================
 CARD_CSS = """
-.fc-wrap{direction:rtl;text-align:right;line-height:1.8;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
-.fc-wrap h3{color:#4b3fb3;margin:22px 0 8px;font-size:18px}
-.fc-card{background:#f8fafc;border:1px solid #e2e8f0;border-right:5px solid #6d5acd;border-radius:10px;padding:12px 16px;margin:12px 0;color:#1e293b}
-.fc-card h4{margin:0 0 8px;color:#4b3fb3;font-size:17px}
-.fc-card p{margin:4px 0}.fc-card ul{margin:4px 0;padding-right:22px}
-.fc-card.red{border-right-color:#dc2626;background:#fef2f2}.fc-card.red h4{color:#b91c1c}
-.fc-card.orange{border-right-color:#f59e0b;background:#fffbeb}.fc-card.orange h4{color:#b45309}
-.fc-card.green{border-right-color:#16a34a;background:#f0fdf4}.fc-card.green h4{color:#15803d}
-.fc-card.blue{border-right-color:#2563eb;background:#eff6ff}.fc-card.blue h4{color:#1d4ed8}
+.fc-wrap{direction:rtl;text-align:right;line-height:1.8;font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#000000 !important;}
+.fc-wrap h3{color:#1f2937 !important;margin:22px 0 8px;font-size:18px}
+.fc-card{background:#f9fafb !important;border:1px solid #e5e7eb !important;border-right:5px solid #4b5563 !important;border-radius:10px;padding:12px 16px;margin:12px 0;color:#000000 !important;}
+.fc-card h4{margin:0 0 8px;color:#1f2937 !important;font-size:17px;}
+.fc-card p{margin:4px 0;color:#000000 !important;}.fc-card ul{margin:4px 0;padding-right:22px;color:#000000 !important;}
+.fc-card.red{border-right-color:#dc2626 !important;background:#fef2f2 !important;color:#000000 !important;}.fc-card.red h4{color:#b91c1c !important;}
+.fc-card.orange{border-right-color:#f59e0b !important;background:#fffbeb !important;color:#000000 !important;}.fc-card.orange h4{color:#b45309 !important;}
+.fc-card.green{border-right-color:#16a34a !important;background:#f0fdf4 !important;color:#000000 !important;}.fc-card.green h4{color:#15803d !important;}
+.fc-card.blue{border-right-color:#2563eb !important;background:#eff6ff !important;color:#000000 !important;}.fc-card.blue h4{color:#1d4ed8 !important;}
 .fc-scroll{overflow-x:auto}
-.fc-table{width:100%;border-collapse:collapse;margin:8px 0;background:#fff;color:#1e293b}
-.fc-table th{background:#4b3fb3;color:#fff;padding:8px;font-size:14px;text-align:center}
-.fc-table td{padding:8px;border-bottom:1px solid #e2e8f0;font-size:14px;text-align:center;vertical-align:top}
-.fc-table tr.hl td{background:#fef9c3;font-weight:600}
-.fc-det{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;margin:8px 0;padding:6px 14px;color:#1e293b}
-.fc-det summary{cursor:pointer;font-weight:700;color:#4b3fb3}
-.fc-sum{background:#ede9fe;border-radius:6px;padding:6px 10px}
-.fc-small{font-size:12px;color:#64748b}
+.fc-table{width:100%;border-collapse:collapse;margin:8px 0;background:#FFFFFF !important;color:#000000 !important;}
+.fc-table th{background:#f3f4f6 !important;color:#1f2937 !important;padding:8px;font-size:14px;text-align:center;border:1px solid #e5e7eb;}
+.fc-table td{padding:8px;border-bottom:1px solid #e5e7eb !important;border-left:1px solid #e5e7eb !important;border-right:1px solid #e5e7eb !important;font-size:14px;text-align:center;vertical-align:top;color:#000000 !important;}
+.fc-table tr.hl td{background:#fef9c3 !important;font-weight:600;color:#000000 !important;}
+.fc-det{background:#f9fafb !important;border:1px solid #e5e7eb !important;border-radius:8px;margin:8px 0;padding:6px 14px;color:#000000 !important;}
+.fc-det summary{cursor:pointer;font-weight:700;color:#1f2937 !important;}
+.fc-sum{background:#f3f4f6 !important;border-radius:6px;padding:6px 10px;color:#000000 !important;}
+.fc-small{font-size:12px;color:#4b5563 !important;}
 """
-
 APP_CSS = """
-.stApp{direction:rtl}
-[data-testid="stSidebar"] *{direction:rtl;text-align:right}
-.stMarkdown,.stAlert,[data-testid="stMetric"]{direction:rtl;text-align:right}
-.stTabs [data-baseweb="tab-list"]{direction:rtl}
-"""
+.stApp { direction: rtl; color: #fde68a !important; }
 
+/* الشريط الجانبي والنصوص والعناوين */
+[data-testid="stSidebar"] {
+    direction: rtl;
+    text-align: right;
+    color: #fde68a !important;
+}
+
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] h1,
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+    color: #fde68a !important;
+}
+
+/* 1) صندوق إدخال اسم القطة (Text Input) وصندوق الوزن (Number Input) */
+[data-testid="stSidebar"] [data-testid="stTextInput"] [data-baseweb="input"],
+[data-testid="stSidebar"] [data-testid="stTextInput"] [data-baseweb="base-input"],
+[data-testid="stSidebar"] [data-testid="stNumberInput"] [data-baseweb="input"],
+[data-testid="stSidebar"] [data-testid="stNumberInput"] [data-baseweb="base-input"] {
+    background-color: #0f172a !important;
+    border-color: rgba(253, 230, 138, 0.35) !important;
+    color: #fde68a !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stTextInput"] input,
+[data-testid="stSidebar"] [data-testid="stNumberInput"] input {
+    background-color: transparent !important;
+    color: #fde68a !important;
+    -webkit-text-fill-color: #fde68a !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stTextInput"] input::placeholder,
+[data-testid="stSidebar"] [data-testid="stNumberInput"] input::placeholder {
+    color: rgba(253, 230, 138, 0.55) !important;
+    -webkit-text-fill-color: rgba(253, 230, 138, 0.55) !important;
+}
+
+/* أزرار (+ و -) داخل صندوق الوزن */
+[data-testid="stSidebar"] [data-testid="stNumberInput"] button,
+[data-testid="stSidebar"] [data-testid="stNumberInput"] button svg {
+    background-color: #1e293b !important;
+    color: #fde68a !important;
+    fill: #fde68a !important;
+    border-color: rgba(253, 230, 138, 0.25) !important;
+}
+
+/* 2) زر استخراج التقرير الشامل في الشريط الجانبي (والأزرار العادية) */
+[data-testid="stSidebar"] [data-testid="stButton"] > button,
+[data-testid="stSidebar"] .stButton > button,
+.stButton > button {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+    background-color: #0284c7 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    padding: 0.65rem 1.6rem !important;
+    box-shadow: 0 6px 20px -3px rgba(2, 132, 199, 0.45) !important;
+    transition: all 0.3s ease !important;
+    width: 100% !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stButton"] > button *,
+[data-testid="stSidebar"] .stButton > button *,
+.stButton > button * {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: transparent !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stButton"] > button:hover,
+[data-testid="stSidebar"] .stButton > button:hover,
+.stButton > button:hover {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    box-shadow: 0 10px 28px -3px rgba(14, 165, 233, 0.6) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* زر التحميل الأزرق */
+[data-testid="stDownloadButton"] > button,
+.stDownloadButton > button {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+    background-color: #0284c7 !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 6px 20px -3px rgba(2, 132, 199, 0.45) !important;
+    transition: all 0.3s ease !important;
+}
+
+[data-testid="stDownloadButton"] > button *,
+.stDownloadButton > button * {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+[data-testid="stDownloadButton"] > button:hover,
+.stDownloadButton > button:hover {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 28px -3px rgba(14, 165, 233, 0.6) !important;
+}
+
+.stMarkdown, .stAlert, [data-testid="stMetric"] {
+    direction: rtl;
+    text-align: right;
+    color: #fde68a !important;
+}
+
+.stTabs [data-baseweb="tab-list"] {
+    direction: rtl;
+}
+
+/* استثناء حقول الإدخال والأزرار من قاعدة التلوين العامة */
+p:not(input),
+span:not(input),
+div:not([data-baseweb] *):not([data-testid="stButton"] *):not([data-testid="stDownloadButton"] *),
+label:not(input),
+h1, h2, h3, h4, h5, h6 {
+    color: #fde68a !important;
+}
+"""
 PAGE_CSS = """
-body{background:#fff;color:#333;margin:0;padding:20px;direction:rtl}
-.report{max-width:900px;margin:auto}
-.report h1{text-align:center;color:#2c3e50;margin-bottom:4px;font-size:26px}
-.subtitle{text-align:center;color:#7f8c8d;margin-bottom:20px;font-size:14px}
-.report h2{color:#fff;background:#4b3fb3;padding:8px 14px;border-radius:8px;margin-top:34px;font-size:20px}
-.chips{text-align:center;margin:10px 0 20px}
-.chip{display:inline-block;background:#ede9fe;color:#4b3fb3;border-radius:20px;padding:4px 14px;margin:3px;font-size:14px;font-weight:600}
-.footer{margin-top:35px;text-align:center;font-size:12px;color:#95a5a6;border-top:1px solid #e2e8f0;padding-top:15px}
-.print-btn{display:block;width:240px;margin:28px auto;padding:12px;background:#27ae60;color:#fff;border:none;border-radius:6px;font-size:16px;font-weight:bold;cursor:pointer}
-@media print{.print-btn{display:none}body{padding:0}.fc-card,.fc-det,tr{break-inside:avoid}}
+body{
+    background: #FFFFFF !important; 
+    color: #000000 !important; 
+    margin: 0; 
+    padding: 20px; 
+    direction: rtl; 
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+.report{
+    max-width: 900px; 
+    margin: auto;
+    background: #FFFFFF !important;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+.report h1{
+    text-align: center; 
+    color: #111827 !important; 
+    margin-bottom: 4px; 
+    font-size: 26px;
+}
+.subtitle{
+    text-align: center; 
+    color: #4b5563 !important; 
+    margin-bottom: 20px; 
+    font-size: 14px;
+}
+.report h2{
+    color: #1f2937 !important; 
+    background: #f3f4f6 !important; 
+    border: 1px solid #e5e7eb; 
+    padding: 8px 14px; 
+    border-radius: 8px; 
+    margin-top: 34px; 
+    font-size: 20px;
+}
+.chips{
+    text-align: center; 
+    margin: 10px 0 20px;
+}
+.chip{
+    display: inline-block; 
+    background: #f3f4f6 !important; 
+    color: #1f2937 !important; 
+    border: 1px solid #d1d5db; 
+    border-radius: 20px; 
+    padding: 4px 14px; 
+    margin: 3px; 
+    font-size: 14px; 
+    font-weight: 600;
+}
+.footer{
+    margin-top: 35px; 
+    text-align: center; 
+    font-size: 12px; 
+    color: #6b7280 !important; 
+    border-top: 1px solid #e5e7eb; 
+    padding-top: 15px;
+}
+.print-btn{
+    display: block; 
+    width: 240px; 
+    margin: 28px auto; 
+    padding: 12px; 
+    background: #2563eb; 
+    color: #FFFFFF !important; 
+    border: none; 
+    border-radius: 6px; 
+    font-size: 16px; 
+    font-weight: bold; 
+    cursor: pointer;
+}
+@media print{
+    .print-btn{display:none}
+    body{padding:0; background: #FFFFFF !important; color: #000000 !important;}
+    .report{background: #FFFFFF !important; color: #000000 !important; border: none; box-shadow: none;}
+    .report h1, .report h2, .subtitle, .chip, .footer{color: #000000 !important; background: #f9fafb !important;}
+}
 """
-
-
 def build_full_html(r):
     cat, plan = r["cat"], r["plan"]
     name = esc(cat["name"])
@@ -1654,7 +1845,6 @@ def build_full_html(r):
 
 # =====================================================================
 # 10. واجهة Streamlit
-# =====================================================================
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap');
@@ -1664,8 +1854,8 @@ html, body, [class*="css"], .stApp {
     direction: rtl !important;
     text-align: right !important;
     font-family: 'Cairo', 'Tajawal', Tahoma, sans-serif !important;
-    background-color: #07090e !important;
-    color: #e2e8f0 !important;
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
 }
 
 /* خلفية التطبيق الرئيسية بتدرج سديمي فلكي */
@@ -1687,14 +1877,14 @@ html, body, [class*="css"], .stApp {
     height: 7px;
 }
 ::-webkit-scrollbar-track {
-    background: #090c14;
+    background: #fde68a;
 }
 ::-webkit-scrollbar-thumb {
-    background: #242c3d;
+    background: #fde68a;
     border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #F59E0B;
+    background: #fde68a;
 }
 
 /* --- تصميم القائمة الجانبية الفاخرة --- */
@@ -1705,7 +1895,7 @@ html, body, [class*="css"], .stApp {
 }
 
 [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-    color: #FBBF24 !important;
+    color: #fde68a !important;
     font-weight: 800 !important;
     font-size: 22px !important;
     text-shadow: 0 0 15px rgba(245, 158, 11, 0.45);
@@ -1733,7 +1923,7 @@ div[data-testid="stRadio"] label,
 div[data-testid="stRadio"] label p,
 div[data-testid="stRadio"] [data-testid="stMarkdownContainer"] p,
 div[data-testid="stRadio"] span {
-    color: #FBBF24 !important;
+    color: #fde68a !important;
     font-size: 13px !important;
     font-weight: 600 !important;
     text-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
@@ -1742,26 +1932,26 @@ div[data-testid="stRadio"] span {
 /* تأثير التمرير (Hover) */
 div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
     background: rgba(245, 158, 11, 0.14) !important;
-    border-color: #F59E0B !important;
+    border-color: #fde68a !important;
     transform: translateX(-4px);
     box-shadow: 0 4px 18px rgba(245, 158, 11, 0.3) !important;
 }
 
 div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover p,
 div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover span {
-    color: #FEF3C7 !important;
+    color: #fde68a !important;
 }
 
 /* العنصر النشط المختار بتوهج ذهبي فاخر */
 div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
     background: linear-gradient(90deg, rgba(245, 158, 11, 0.26) 0%, rgba(217, 119, 6, 0.16) 100%) !important;
-    border: 1px solid #F59E0B !important;
+    border: 1px solid #fde68a !important;
     box-shadow: 0 0 20px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
 }
 
 div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p,
 div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) span {
-    color: #FFFBEB !important;
+    color: #fde68a !important;
     font-weight: 800 !important;
     text-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
 }
@@ -1769,7 +1959,7 @@ div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) s
 /* عنوان القائمة "اختر البرنامج:" بالأصفر الذهبي الملكي */
 div[data-testid="stRadio"] > label,
 div[data-testid="stRadio"] > label p {
-    color: #F59E0B !important;
+    color: #fde68a !important;
     font-size: 16px !important;
     font-weight: 800 !important;
     margin-bottom: 12px !important;
@@ -1778,54 +1968,96 @@ div[data-testid="stRadio"] > label p {
 
 /* تخصيص مؤشر الراديو الدائري باللون الذهبي */
 div[data-testid="stRadio"] input[type="radio"] {
-    accent-color: #F59E0B !important;
+    accent-color: #fde68a !important;
 }
 
 /* --- تخصيص الأزرار الرئيسية --- */
+/* تخصيص زر الاستخراج الرئيسي ليكون بنفس تصميم وتدرج زر التحميل الأزرق */
+div.stButton > button,
 .stButton button {
-    background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%) !important;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
     color: #ffffff !important;
     font-weight: 700 !important;
     font-size: 16px !important;
     border-radius: 12px !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
     padding: 0.65rem 1.6rem !important;
-    box-shadow: 0 6px 20px -3px rgba(124, 58, 237, 0.45) !important;
+    box-shadow: 0 6px 20px -3px rgba(2, 132, 199, 0.45) !important;
     transition: all 0.3s ease !important;
+    width: 100% !important;
 }
 
+div.stButton > button *,
+div.stButton > button p,
+div.stButton > button span,
+.stButton button * {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+div.stButton > button:hover,
 .stButton button:hover {
-    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
-    box-shadow: 0 10px 28px -3px rgba(139, 92, 246, 0.6) !important;
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    box-shadow: 0 10px 28px -3px rgba(14, 165, 233, 0.6) !important;
     transform: translateY(-2px) !important;
     color: #ffffff !important;
 }
 
 /* تخصيص زر التحميل */
+div.stDownloadButton > button,
 .stDownloadButton button {
     background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
-    color: white !important;
+    color: #ffffff !important;
     font-weight: 700 !important;
     font-size: 16px !important;
     border-radius: 12px !important;
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    padding: 0.65rem 1.6rem !important;
     box-shadow: 0 6px 20px -3px rgba(2, 132, 199, 0.45) !important;
     transition: all 0.3s ease !important;
 }
 
+div.stDownloadButton > button *,
+div.stDownloadButton > button p,
+div.stDownloadButton > button span,
+.stDownloadButton button * {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+div.stDownloadButton > button:hover,
 .stDownloadButton button:hover {
     background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
     transform: translateY(-2px) !important;
     box-shadow: 0 10px 28px -3px rgba(14, 165, 233, 0.6) !important;
+    color: #ffffff !important;
+}
+/* --- تخصيص حقول الإدخال والعناوين التابعة لها والـ Placeholders --- */
+.stTextInput label, .stSelectbox label, .stDateInput label, .stTimeInput label, 
+[data-testid="stWidgetLabel"] p, [data-testid="stWidgetLabel"] span {
+    color: #fde68a !important;
+    font-weight: 700 !important;
 }
 
-/* تخصيص حقول الإدخال */
 .stTextInput input, .stSelectbox [data-baseweb="select"], .stDateInput input, .stTimeInput input {
     background-color: rgba(17, 24, 39, 0.8) !important;
     border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    color: #f8fafc !important;
+    color: #fde68a !important;
     border-radius: 10px !important;
     font-family: 'Cairo', sans-serif !important;
+}
+
+/* تلوين النص المؤقت (Placeholder) داخل حقول الكتابة بالأصفر الذهبي الشفاف */
+.stTextInput input::placeholder, 
+input::placeholder {
+    color: rgba(253, 230, 138, 0.6) !important;
+}
+
+/* تلوين النصوص داخل القوائم المنسدلة والعناصر المحددة (مثل السنة، الشهر، اليوم) */
+[data-baseweb="select"] span, 
+[data-baseweb="menu"] div, 
+div[role="option"] div {
+    color: #fde68a !important;
 }
 
 /* بطاقات وتنبيهات مخصصة */
@@ -1837,7 +2069,7 @@ div[data-testid="stRadio"] input[type="radio"] {
     margin-top: 25px;
     text-align: center;
     font-size: 13px;
-    color: #FDE68A;
+    color: #fde68a;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -1846,11 +2078,10 @@ div[data-testid="stRadio"] input[type="radio"] {
 st.sidebar.markdown("""
 <div style="text-align: center; padding: 10px 0 15px 0;">
     <div style="font-size: 34px; margin-bottom: 6px; filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.5));">🪐</div>
-    <div style="font-size: 20px; font-weight: 800; color: #FBBF24; letter-spacing: -0.5px;">رادار الرعاية الفلكية للقطط</div>
+    <div style="font-size: 20px; font-weight: 800; color: #fde68a; letter-spacing: -0.5px;">رادار الرعاية الفلكية للقطط</div>
     <div style="font-size: 12px; color: #fde68a; font-weight: 600; margin-top: 4px;">Feline Astrological Care Radar</div>
 </div>
 """, unsafe_allow_html=True)
-
 MONTHS = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو",
           "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
 
@@ -1921,7 +2152,7 @@ def render(r):
         full = build_full_html(r)
         st.download_button("📥 تحميل التقرير كملف HTML", data=full.encode("utf-8"),
                            file_name="feline_celestial_report.html", mime="text/html")
-        components.html(full, height=800, scrolling=True)
+        st.iframe(full, height=800)
 
 
 def main():
